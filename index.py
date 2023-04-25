@@ -15,4 +15,3 @@ class PiServer(socketio.AsyncNamespace):
         print(sid)
         data = {'recived': 'yes'}
         await self.emit("outp", {'recived': 'yes'})
-'p'
