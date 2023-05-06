@@ -1,8 +1,8 @@
 import socketio
 from app import *
-import enum 
+from enum import Enum 
 
-class STATE(enum.Enum):
+class STATE(Enum):
     LOADING = 1
     STARTING = 2
     RUNNING = 3
@@ -10,6 +10,8 @@ class STATE(enum.Enum):
     STOPPED = 5
 
 STATE = enum('STATE', ['LOADING', 'STARTING', 'RUNNING', 'STOPPING', 'STOPPED' ])
+
+current_state = STATE.LOADING 
 
 sio = socketio.AsyncServer(async_mode = "asgi", cors_allowed_origins = "http://localhost:3000")
 
@@ -54,13 +56,14 @@ def main():
         #-------???----------------BMS_COM_CHECK
         #-------???----------------GUI_CONNECTED
 
-        if(STATE == 1):
+        if (current_state == STATE.LOADING):
             #CONTACTOR OFF----------------
             #BRAKES NOT ACTUATED----------
             state1_message = "Brakes are not actuated \n Contactor turned off"
             print("Brakes are not actuated \n Contactor turned off")
             state1(state1_message)
-           
+
+        '''          
         if(STATE == 2):
             #PT_CHECK--------------------
             if(PT1_value == 1):
@@ -110,7 +113,7 @@ def main():
             #GUI REPORTing
             print("f")
             #GO BACK TO STAGE U WANT
-         
+    '''
  
            
        
