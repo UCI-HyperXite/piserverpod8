@@ -12,12 +12,18 @@ sio = socketio.AsyncServer(
 app = socketio.ASGIApp(sio)
 
 buttonSignal = 0;
-old_bms = 0;
-
+sid_save = ""
 @sio.event
 async def connect(sid, environ):
     print(sid, 'connected')
+    global sid_save 
+    sid_save = sid
 
+def get_sid_save():
+    return sid_save
+
+# export the get_sid_save function
+__all__ = ['sio', 'get_sid_save']
 
 @sio.event
 async def disconnect(sid):
@@ -43,10 +49,5 @@ async def stop(sid, data):
         buttonSignal = 0
         buttonSignal += data
         await sio.emit('stopping pod', "Stage 4: Pod is stopping", to=sid)
-
-def state1(msg):
-    @sio.event
-    async def state1(sid):
-        sio.emit('Loading State', msg, to=sid)
 
 
