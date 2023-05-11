@@ -1,5 +1,6 @@
 import spidev
 import RPi.GPIO as GPIO
+import time
 
 sensorPin5000 = 17  # SPI channel 0 a1
 sensorPin300 = 27  # SPI channel 1 a0
@@ -29,6 +30,7 @@ while True:
             voltageOutputMax - voltageOutputMin)
 
     print("5000 PT Value: ", pressureValue5000, "        300 PT Value: ", pressureValue300)
+    message  =  "5000 PT Value: ", pressureValue5000, "        300 PT Value: ", pressureValue300
 
     # Delay for 100 milliseconds
     time.sleep(0.1)
