@@ -1,3 +1,10 @@
+bms_values = 0.0
+PT1_value = 0.0
+PT2_value = 0.0
+PT3_value = 0.0
+GUI_message = 0.0
+brakes_signalled = 0.0
+power_check = 0.0
     while(True):
         #LOADING----------------------------------------------------------------  
         if (current_state == 1):
