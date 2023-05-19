@@ -1,6 +1,6 @@
 # app.py
 import socketio
-from utils import get_sid_save, sid_save
+from utils import get_sid_save, get_current_state, set_current_state
 
 sio = socketio.AsyncServer(
     async_mode="asgi", cors_allowed_origins="http://localhost:3000"
@@ -18,6 +18,18 @@ async def connect(sid, environ):
 async def disconnect(sid):
     print(sid, 'disconnected')
 
+@sio.event
+async def start(sid, data):
+    if data == 2:
+        set_current_state(2)
+        await sio.emit('starting pod', "Stage 3: Pod is starting", to=sid)
+
+
+@sio.event
+async def stop(sid, data):
+    if data == 4:
+        set_current_state(4)
+        await sio.emit('stopping pod', "Stage 5: Pod is stoppingu78", to=sid)
 
 @sio.event
 async def sum(sid, data):
