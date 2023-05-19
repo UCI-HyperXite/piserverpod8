@@ -2,6 +2,7 @@
 from app import sio
 from utils import get_sid_save, get_current_state, set_current_state
 import asyncio
+#from current import vplus, vminus, shunt_current
 #from pneumatics import message
 BMS_value = 0.0
 PT1_value = 0.0
@@ -19,6 +20,9 @@ async def run_loop() -> None:
                 print("Brakes are not actuated \n Contactor turned off")
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
+                await sio.emit("vplus", "vplus", to=sid_save_value)
+                await sio.emit("vminus", "vminus", to=sid_save_value)
+                await sio.emit("shunt", "shunt_current", to=sid_save_value)
                 if(PT1_value == 1):
                     print("PT 1 Checked!")
                 else:
