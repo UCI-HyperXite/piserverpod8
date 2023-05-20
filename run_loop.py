@@ -5,6 +5,7 @@ import asyncio
 from basic_braking_rpi import start, stop
 from current import vplus, vminus, shunt_current
 from bms import read_bms
+from wheel_encoder import calc
 from pneumatics import pressureValue300, pressureMax5000
 BMS_value = 0.0
 PT1_value = 0.0
@@ -19,6 +20,7 @@ async def send_data():
     bms = read_bms()
     BMS_value = bms["highest_cell_voltage"]
     await sio.emit("vplus", vplus, to=sid_save_value)
+    await sio.emit("speed", calc, to=sid_save_value)
     await sio.emit("vminus", vminus, to=sid_save_value)
     await sio.emit("shunt", shunt_current, to=sid_save_value)
     await sio.emit("bmsHigh", BMS_value, to=sid_save_value)
