@@ -6,6 +6,7 @@ from run_loop import run_loop
 
 config = uvicorn.Config(
     "app:app",
+    host = "0.0.0.0",
     port=8000,
     log_level="info",
     access_log=True,

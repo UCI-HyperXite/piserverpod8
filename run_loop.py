@@ -4,7 +4,8 @@ from utils import get_sid_save, get_current_state, set_current_state
 import asyncio
 from basic_braking_rpi import start, stop
 from current import vplus, vminus, shunt_current
-#from pneumatics import message
+from bms import read_bms
+from pneumatics import pressureValue300, pressureMax5000
 BMS_value = 0.0
 PT1_value = 0.0
 PT2_value = 0.0
@@ -12,18 +13,33 @@ PT3_value = 0.0
 GUI_message = 0.0
 brakes_signalled = 0.0
 power_check = 0.0
+
+async def send_data():
+    sid_save_value  = get_sid_save()
+    bms = read_bms()
+    BMS_value = bms["highest_cell_voltage"]
+    await sio.emit("vplus", vplus, to=sid_save_value)
+    await sio.emit("vminus", vminus, to=sid_save_value)
+    await sio.emit("shunt", shunt_current, to=sid_save_value)
+    await sio.emit("bmsHigh", BMS_value, to=sid_save_value)
+    await sio.emit("pressure300", pressureValue300, to=sid_save_value)
+    await sio.emit("pressure5000", pressureMax5000, to=sid_save_value)
+    await sio.emit("BMSCells", bms["cells"], to=sid_save_value)
+
 async def run_loop() -> None:
     while True:
         try:
             if (get_current_state() == 1):
-                print("CURRENT STATE2", get_current_state())
+                bms = read_bms()
+                BMS_value = bms["highest_cell_voltage"]
+                print("CURRENT STATE 1", get_current_state())
                 state1_message = "Brakes are not actuated \n Contactor turned off"
                 print("Brakes are not actuated \n Contactor turned off")
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
-                await sio.emit("vplus", vplus, to=sid_save_value)
-                await sio.emit("vminus", vminus, to=sid_save_value)
-                await sio.emit("shunt", shunt_current, to=sid_save_value)
+                PT1_value = pressureMax5000
+                PT2_value = pressureValue300
+                send_data()
                 if(PT1_value == 1):
                     print("PT 1 Checked!")
                 else:
@@ -37,6 +53,7 @@ async def run_loop() -> None:
                     #disconnect battery from motors
                 else:
                     print("Log all cell values")
+
                 #GUI Indicates that we want to run the pod then:
                 if (GUI_message == 2):
                     set_current_state(2)
@@ -45,14 +62,12 @@ async def run_loop() -> None:
                     print("GUI has not indicated start still!")
             #STARTING----------------------------------------------------------------
             if(get_current_state() == 2):
-                print("CURRENT STATE2", get_current_state())
+                print("CURRENT STATE 2", get_current_state())
 
                 #SIGNAL THE BRAKES
                 start()
                 #SEND DATA to GUI 
-                await sio.emit("PT1_value", PT1_value, to=sid_save_value)
-                await sio.emit("PT2_value", PT2_value, to=sid_save_value)
-                await sio.emit("BMS_value", BMS_value, to=sid_save_value)
+                send_data()
                 if(brakes_signalled == 1):
                     print("t\The brakes have been signalled successfully")
                 else:
@@ -60,9 +75,8 @@ async def run_loop() -> None:
 
             #RUNNING--------------------------------------------------------------------
             if(get_current_state() == 3):
-                await sio.emit("PT1_value", PT1_value, to=sid_save_value)
-                await sio.emit("PT2_value", PT2_value, to=sid_save_value)
-                await sio.emit("BMS_value", BMS_value, to=sid_save_value)
+                
+                send_data()
                 if (GUI_message == 4):
                     print("GUI requested STOP")
                     set_current_state(4)
@@ -77,7 +91,8 @@ async def run_loop() -> None:
             if(get_current_state() == 4):
                 #STOP
                 stop()
-                print("Breaking")
+                send_data()
+                print("Braking")
                 
             await asyncio.sleep(1)
         except KeyboardInterrupt:
