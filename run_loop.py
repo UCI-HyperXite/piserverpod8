@@ -1,11 +1,12 @@
 # run_loop.py
 from app import sio
-from utils import get_sid_save, get_current_state, set_current_state
+from utils import get_sid_save, get_break_state, get_current_state, set_current_state
 import asyncio
 from basic_braking_rpi import start, stop
 from current import vplus, vminus, shunt_current
 from bms import read_bms
 from wheel_encoder import calc
+from contactor import contactor_start, contactor_stop
 from pneumatics import pressureValue300, pressureMax5000
 BMS_value = 0.0
 PT1_value = 0.0
@@ -14,6 +15,7 @@ PT3_value = 0.0
 GUI_message = 0.0
 brakes_signalled = 0.0
 power_check = 0.0
+
 
 async def send_data():
     sid_save_value  = get_sid_save()
@@ -32,6 +34,7 @@ async def run_loop() -> None:
     while True:
         try:
             if (get_current_state() == 1):
+                contactor_start()
                 bms = read_bms()
                 BMS_value = bms["highest_cell_voltage"]
                 print("CURRENT STATE 1", get_current_state())
@@ -46,6 +49,7 @@ async def run_loop() -> None:
                     print("PT 1 Checked!")
                 else:
                     print("PT 1  Failed!")
+
                 if(PT2_value == 1):
                     print("PT 2 Checked!")
                 else:
@@ -55,6 +59,10 @@ async def run_loop() -> None:
                     #disconnect battery from motors
                 else:
                     print("Log all cell values")
+                start()
+
+                #turn on contactor to begin to check high voltage (contactor, two inverters)
+                #given code to check inverters
 
                 #GUI Indicates that we want to run the pod then:
                 if (GUI_message == 2):
@@ -92,9 +100,18 @@ async def run_loop() -> None:
             #STOPPING-------------------------------------------------------------------------
             if(get_current_state() == 4):
                 #STOP
+                contactor_stop()
                 stop()
                 send_data()
                 print("Braking")
+            if(get_current_state() == 5):
+                if (get_break_state() == 0):
+                    start()
+                else:
+                    stop()
+                send_data()
+                set_current_state(1)
+                print("Brake Switch")
                 
             await asyncio.sleep(1)
         except KeyboardInterrupt:

@@ -55,6 +55,7 @@ def read_bms():
         "pack_voltage":"",
         "pack_current":"",
         "dtc_flags":"",
+        #diag trouble code -- if nonzero stop pod
         "cells":""
     }
     while 0 in cells:

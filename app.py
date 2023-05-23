@@ -22,15 +22,20 @@ async def disconnect(sid):
 async def start(sid, data):
     if data == 2:
         set_current_state(2)
-        await sio.emit('starting pod', "Stage 3: Pod is starting", to=sid)
+        await sio.emit('starting pod', "Stage 2: Pod is starting", to=sid)
 
 
 @sio.event
 async def stop(sid, data):
     if data == 4:
         set_current_state(4)
-        await sio.emit('stopping pod', "Stage 5: Pod is stoppingu78", to=sid)
+        await sio.emit('stopping pod', "Stage 4: Pod is stoppingu78", to=sid)
 
+@sio.event
+async def load(sid, data):
+    if data == 5:
+        set_current_state(5)
+        await sio.emit('stopping pod', "Stage 5: Pod is loading", to=sid)
 @sio.event
 async def sum(sid, data):
     result = data['numbers'][0] + data['numbers'][1]
