@@ -19,7 +19,7 @@ motor.engage(30, 30)
 time.sleep(5)
 
 # Similarly, the motor can be stopped via the motor.halt command:
-motor.halt(0)
+motor.halt()
 time.sleep(1)
 
 # You can also poll relevent data from the motor:
