@@ -9,7 +9,7 @@ motor = limmy.VESC(serial_port=serial_port)
 print("Firmware: ", motor.get_firmware_version())
 
 time.sleep(1)
-motor.send_terminal_cmd('foc_openloop {current} {rpm}'.format(current=30, rpm=2700))
+motor.send_terminal_cmd('foc_openloop {current} {rpm}'.format(current=50, rpm=2700))
 
 time.sleep(5)
 #     # IMPORTANT: YOU MUST STOP THE HEARTBEAT IF IT IS RUNNING BEFORE IT GOES OUT OF SCOPE. Otherwise, it will not clean-up properly.

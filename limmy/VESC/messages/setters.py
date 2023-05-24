@@ -2,6 +2,12 @@ from limmy.protocol.base import VESCMessage
 from limmy.protocol.interface import encode
 from limmy.VESC.messages import VedderCmd
 
+class SendTerminalCMD(metaclass=VESCMessage):
+    id = VedderCmd.COMM_TERMINAL_CMD
+    fields = [
+        ('cmd','s')
+    ]
+
 class SetGPDFreq(metaclass=VESCMessage):
     id = VedderCmd.COMM_GPD_SET_FSW
     fields = [

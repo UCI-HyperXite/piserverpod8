@@ -2,6 +2,7 @@ from limmy.protocol.interface import encode_request, encode, decode
 from limmy.VESC.messages import *
 import time
 import threading
+import struct
 
 # because people may want to use this library for their own messaging, do not make this a required package
 try:
@@ -90,6 +91,13 @@ class VESC(object):
                 time.sleep(0.000001)  # add some delay just to help the CPU
             response, consumed = decode(self.serial_port.read(self.serial_port.in_waiting))
             return response
+    
+    def send_terminal_cmd(self, cmd):
+        """
+        Send a terminal command to the VESC
+        :param cmd: terminal command to send
+        """
+        self.write(encode(SendTerminalCMD(cmd)))
 
     def set_gpd_freq(self, new_gpd_freq):
         """

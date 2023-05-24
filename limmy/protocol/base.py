@@ -29,6 +29,7 @@ class VESCMessage(type):
             raise TypeError("ID conflict with %s" % str(VESCMessage._msg_registry[msg_id]))
         else:
             VESCMessage._msg_registry[msg_id] = cls
+
         # initialize cls static variables
         cls._string_field = None
         cls._fmt_fields = ''
@@ -38,12 +39,16 @@ class VESCMessage(type):
             cls._field_names.append(field[0])
             if len(field) >= 3:
                 cls._field_scalars.append(field[2])
-            if field[1] is 's':
+            if field[1] == 's':
                 # string field, add % so we can vary the length
                 cls._fmt_fields += '%u'
                 cls._string_field = idx
             cls._fmt_fields += field[1]
-        cls._full_msg_size = struct.calcsize(cls._fmt_fields)
+        print(type(cls._fmt_fields), cls._fmt_fields)
+        try:
+            cls._full_msg_size = struct.calcsize(cls._fmt_fields)
+        except struct.error:
+            print(f'[INFO] Message {cls.__name__} has variable length')
         # check that at most 1 field is a string
         string_field_count = cls._fmt_fields.count('s')
         if string_field_count > 1:
@@ -121,7 +126,7 @@ class VESCMessage(type):
             # string field
             string_field_name = instance._field_names[instance._string_field]
             string_length = len(getattr(instance, string_field_name))
-            field_values[instance._string_field] = field_values[instance._string_field].encode('ascii')
+            field_values[instance._string_field] = field_values[instance._string_field].encode('latin-1')
             values = ((instance.id,) + tuple(field_values))
             if instance.can_id is not None:
                 fmt = VESCMessage._endian_fmt + VESCMessage._can_id_fmt + VESCMessage._id_fmt\
