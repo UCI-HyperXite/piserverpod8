@@ -11,7 +11,7 @@ print("Firmware: ", motor.get_firmware_version())
 time.sleep(1)
 
 # Motor can be started via motor.engage command:
-    # The utilization for the command is: motor.engage(current, rpm)
+    # The utilization for the command is: motor.engage(current, frequency)
     # Where current is in Amps and is a float above 0.0
     # And frequency is in Hz and is an float above 0.0
 
