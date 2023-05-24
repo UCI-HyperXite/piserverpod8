@@ -233,13 +233,13 @@ class VESC(object):
         """
         :return: Current motor current
         """
-        return self.get_measurements().current_motor
+        return self.get_measurements().avg_motor_current
 
     def get_incoming_current(self):
         """
         :return: Current incoming current
         """
-        return self.get_measurements().current_in
+        return self.get_measurements().avg_input_current
 
 
 
