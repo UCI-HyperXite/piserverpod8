@@ -91,6 +91,20 @@ class VESC(object):
                 time.sleep(0.000001)  # add some delay just to help the CPU
             response, consumed = decode(self.serial_port.read(self.serial_port.in_waiting))
             return response
+        
+    def engage(self,current,frequency):
+        """
+        Engage the motor
+        :param current: current to send to the motor
+        :param frequency: frequency to send to the motor
+        """
+        self.send_terminal_cmd(f'foc_openloop {current} {int(frequency*60*(3/2))}')
+    
+    def halt(self):
+        """
+        Halt the motor by setting output current to 0 Amps
+        """
+        self.set_current(0)
     
     def send_terminal_cmd(self, cmd):
         """
@@ -149,12 +163,6 @@ class VESC(object):
         :param gpd_sample: new gpd int scale
         """
         self.write(encode(SetGPDIntScale(scale)))
-
-    def get_rpm(self):
-        """
-        :return: Current motor rpm
-        """
-        return self.get_measurements().rpm
     
     def set_rpm(self, new_rpm):
         """

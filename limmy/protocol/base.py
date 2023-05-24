@@ -44,7 +44,6 @@ class VESCMessage(type):
                 cls._fmt_fields += '%u'
                 cls._string_field = idx
             cls._fmt_fields += field[1]
-        print(type(cls._fmt_fields), cls._fmt_fields)
         try:
             cls._full_msg_size = struct.calcsize(cls._fmt_fields)
         except struct.error:

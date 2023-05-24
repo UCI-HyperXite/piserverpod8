@@ -24,9 +24,9 @@ time.sleep(1)
 
 # You can also poll relevent data from the motor:
 
-print(motor.get_v_in()) # Input voltage to the Flipsky VESC, should match Orion BMS 2 Pack Voltage, roughly 44~48V
-print(motor.get_motor_current()) # Current being drawn by the motor, informs force output
-print(motor.get_incoming_current()) # Current being drawn from the battery, should match Orion BMS 2 Pack Current
+motor.get_v_in() # Input voltage to the Flipsky VESC, should match Orion BMS 2 Pack Voltage, roughly 44~48V
+motor.get_motor_current() # Current being drawn by the motor, informs force output
+motor.get_incoming_current() # Current being drawn from the battery, should match Orion BMS 2 Pack Current
 
 
 # Lastly, remember to stop the heartbeat thread before the object goes out of scope:
