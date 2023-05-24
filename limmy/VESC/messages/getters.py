@@ -77,3 +77,23 @@ class GetRotorPosition(metaclass=VESCMessage):
     fields = [
             ('rotor_pos', 'i', 100000)
     ]
+
+class GetGPDBufferSizeLeft(metaclass=VESCMessage):
+    """ 
+    Gets the number of bytes left in the buffer
+    """
+    id = VedderCmd.COMM_GPD_BUFFER_SIZE_LEFT
+
+    fields = [
+            ('buffer_size_left', 'i', 1)
+    ]
+
+class GetGPDBufferNotify(metaclass=VESCMessage):
+    """ 
+    Bytes in buffer are lower than the threshold
+    """
+    id = VedderCmd.COMM_GPD_BUFFER_NOTIFY
+
+    fields = [
+            ('buffer_notify', 'i', 1)
+    ]

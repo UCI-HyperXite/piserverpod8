@@ -1,10 +1,16 @@
-#import wheel encoder velocity
+import limmy
+from limmy.protocol.interface import encode_request, encode, decode
+from limmy.VESC.messages import VedderCmd, VedderGPD
+import time
 
-class Motor:
-    def __init__(self):
-        self.freq = 0
-        self.velocity
-    def get_frequy():
-        #get ref of freq to v 
-        #return velocity^3
-        return
+# serial port that VESC is connected to. Something like "COM3" for windows
+serial_port = 'COM15'
+motor = limmy.VESC(serial_port=serial_port)
+print("Firmware: ", motor.get_firmware_version())
+
+time.sleep(1)
+motor.send_terminal_cmd('foc_openloop {current} {rpm}'.format(current=30, rpm=2700))
+
+time.sleep(5)
+#     # IMPORTANT: YOU MUST STOP THE HEARTBEAT IF IT IS RUNNING BEFORE IT GOES OUT OF SCOPE. Otherwise, it will not clean-up properly.
+motor.stop_heartbeat()

@@ -14,6 +14,36 @@ class SetGPDMode(metaclass=VESCMessage):
         ('mode','i',1)
     ]
 
+class SetGPDOutputSample(metaclass=VESCMessage):
+    id = VedderCmd.COMM_GPD_OUTPUT_SAMPLE
+    fields = [
+        ('sample','f',1)
+    ]
+
+class SetGPDFillBuffer(metaclass=VESCMessage):
+    id = VedderCmd.COMM_GPD_FILL_BUFFER
+    fields = [
+        ('sample','f',1)
+    ]
+
+class SetGPDIntScale(metaclass=VESCMessage):
+    id = VedderCmd.COMM_GPD_SET_BUFFER_INT_SCALE
+    fields = [
+        ('scale','f',1)
+    ]
+
+class SetGPDFillBufferINT8(metaclass=VESCMessage):
+    id = VedderCmd.COMM_GPD_FILL_BUFFER_INT8
+    fields = [
+        ('sample','i',1)
+    ]
+
+class SetGPDFillBufferINT16(metaclass=VESCMessage):
+    id = VedderCmd.COMM_GPD_FILL_BUFFER_INT16
+    fields = [
+        ('sample','b',1)
+    ]
+
 class SetDutyCycle(metaclass=VESCMessage):
     """ Set the duty cycle.
 
@@ -102,7 +132,6 @@ class SetServoPosition(metaclass=VESCMessage):
     fields = [
         ('servo_pos', 'h', 1000)
     ]
-
 
 class Alive(metaclass=VESCMessage):
     """Heartbeat signal to keep VESC alive"""

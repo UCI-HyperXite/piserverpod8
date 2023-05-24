@@ -104,6 +104,49 @@ class VESC(object):
         :param new_gpd_mode: new gpd mode
         """
         self.write(encode(SetGPDMode(new_gpd_mode)))
+
+    def set_gpd_output_sample(self, gpd_sample):
+        """
+        Set the gpd output sample
+        :param gpd_sample: new gpd output sample
+        """
+        self.write(encode(SetGPDOutputSample(gpd_sample)))
+    
+    def set_gpd_fill_buffer(self, gpd_sample):
+        """
+        Set the gpd fill buffer
+        :param gpd_sample: new gpd fill buffer
+        """
+        self.write(encode(SetGPDFillBuffer(gpd_sample)))
+    
+    def set_gpd_fill_buffer_int8(self, gpd_sample):
+        """
+        Set the gpd fill buffer, expects an 8 bit int
+        :param gpd_sample: new gpd fill buffer
+        """
+        self.write(encode(SetGPDFillBufferINT8(gpd_sample)))
+    
+    def set_gpd_fill_buffer_int16(self, gpd_sample):
+        """
+        UNIMPLEMENTED - LIKELY DOES NOT WORK
+        Set the gpd fill buffer, expects an 16 bit int
+        :param gpd_sample: new gpd fill buffer
+        """
+        print('[WARNING] set_gpd_fill_buffer_int16 likely does not work')
+        self.write(encode(SetGPDFillBufferINT16(gpd_sample)))
+
+    def set_gpd_int_scale(self, scale):
+        """
+        Set the gpd int scale
+        :param gpd_sample: new gpd int scale
+        """
+        self.write(encode(SetGPDIntScale(scale)))
+
+    def get_rpm(self):
+        """
+        :return: Current motor rpm
+        """
+        return self.get_measurements().rpm
     
     def set_rpm(self, new_rpm):
         """
@@ -135,6 +178,18 @@ class VESC(object):
         :return: A msg object with attributes containing the measurement values
         """
         return self.write(self._get_values_msg, num_read_bytes=self._get_values_msg_expected_length)
+    
+    def get_gpd_buffer_size_left(self):
+        """
+        :return: The number of bytes left in the GPD buffer
+        """
+        return self.write(encode(GetGPDBufferSizeLeft()))
+    
+    def get_gpd_buffer_notify(self):
+        """
+        :return: bytes in buffer are lower than the threshold
+        """
+        return self.write(encode(GetGPDBufferNotify()))
 
     def get_firmware_version(self):
         msg = GetVersion()
