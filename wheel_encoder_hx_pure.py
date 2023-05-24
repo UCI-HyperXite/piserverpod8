@@ -1,8 +1,8 @@
 import time
 import RPi.GPIO as GPIO
 
-outputA = 4
-outputB = 2
+outputA = 14
+outputB = 15
 counter = 0
 aState = 0
 aLastState = 0
