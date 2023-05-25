@@ -4,6 +4,7 @@ from utils import get_sid_save, get_break_state, get_current_state, set_current_
 import asyncio
 from basic_braking_rpi import start, stop
 from current import vplus, vminus, shunt_current
+from podmotor import motor_start, motor_stop, get_motor_data
 from bms import read_bms
 from wheel_encoder import calc
 from contactor import contactor_start, contactor_stop
@@ -29,6 +30,7 @@ async def send_data():
     await sio.emit("pressure300", pressureValue300, to=sid_save_value)
     await sio.emit("pressure5000", pressureMax5000, to=sid_save_value)
     await sio.emit("BMSCells", bms["cells"], to=sid_save_value)
+    await sio.emit("Motor data", get_motor_data(), to=sid_save_value)
 
 async def run_loop() -> None:
     while True:
@@ -76,6 +78,7 @@ async def run_loop() -> None:
 
                 #SIGNAL THE BRAKES
                 start()
+                motor_start()
                 #SEND DATA to GUI 
                 send_data()
                 if(brakes_signalled == 1):
@@ -102,6 +105,7 @@ async def run_loop() -> None:
                 #STOP
                 contactor_stop()
                 stop()
+                motor_stop()
                 send_data()
                 print("Braking")
             if(get_current_state() == 5):
