@@ -2,7 +2,7 @@
 from app import sio
 from utils import get_sid_save, get_break_state, get_current_state, set_current_state
 import asyncio
-from basic_braking_rpi import start, stop
+from basic_braking_rpi import break_start, break_stop
 from current import vplus, vminus, shunt_current
 from podmotor import motor_start, motor_stop, get_motor_data
 from bms import read_bms
@@ -10,8 +10,8 @@ from wheel_encoder import calc
 from contactor import contactor_start, contactor_stop
 from pneumatics import pressureValue300, pressureMax5000
 BMS_value = 0.0
-PT1_value = 0.0
-PT2_value = 0.0
+PT_5000 = 0.0
+PT_300 = 0.0
 PT3_value = 0.0
 GUI_message = 0.0
 brakes_signalled = 0.0
@@ -44,24 +44,26 @@ async def run_loop() -> None:
                 print("Brakes are not actuated \n Contactor turned off")
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
-                PT1_value = pressureMax5000
-                PT2_value = pressureValue300
+                PT_5000 = pressureMax5000
+                PT_300 = pressureValue300
                 send_data()
-                if(PT1_value == 1):
-                    print("PT 1 Checked!")
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
                 else:
-                    print("PT 1  Failed!")
-
-                if(PT2_value == 1):
-                    print("PT 2 Checked!")
-                else:
-                    print("PT 2  Failed!")
+                    print("PT 300  OUT OF RANGE!")
                 if(BMS_value < 3.4):
                     print("Error in BMS values!")
                     #disconnect battery from motors
                 else:
                     print("Log all cell values")
-                start()
+                if (wheel_encoder < 0.5):
+                    print("Wheel Encoder OK!")
+                break_start()
+        
 
                 #turn on contactor to begin to check high voltage (contactor, two inverters)
                 #given code to check inverters
@@ -77,9 +79,17 @@ async def run_loop() -> None:
                 print("CURRENT STATE 2", get_current_state())
 
                 #SIGNAL THE BRAKES
-                start()
+                break_start()
                 motor_start()
                 #SEND DATA to GUI 
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
+                else:
+                    print("PT 300  OUT OF RANGE!")
                 send_data()
                 if(brakes_signalled == 1):
                     print("t\The brakes have been signalled successfully")
@@ -90,6 +100,15 @@ async def run_loop() -> None:
             if(get_current_state() == 3):
                 
                 send_data()
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
+                else:
+                    print("PT 300  OUT OF RANGE!")
+
                 if (GUI_message == 4):
                     print("GUI requested STOP")
                     set_current_state(4)
@@ -104,15 +123,32 @@ async def run_loop() -> None:
             if(get_current_state() == 4):
                 #STOP
                 contactor_stop()
-                stop()
                 motor_stop()
+                break_stop()
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
+                else:
+                    print("PT 300  OUT OF RANGE!")
                 send_data()
                 print("Braking")
+            #LOADING--------------switches breaks off/on out of fsm, returns to state 1-----
             if(get_current_state() == 5):
-                if (get_break_state() == 0):
-                    start()
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
                 else:
-                    stop()
+                    print("PT 300  OUT OF RANGE!")
+                if (get_break_state() == 0):
+                    break_start()
+                else:
+                    break_stop()
                 send_data()
                 set_current_state(1)
                 print("Brake Switch")

@@ -8,12 +8,12 @@ GPIO.setup(26, GPIO.OUT)
 
 #pts
 #turning brakes on 
-def start():
+def break_start():
         set_break_state(1)
         if pt < 25:
                 print("no pressure")
         elif pt < 105:
-                stop()
+                break_stop()
         elif pt <= 145:
     
                 gpio.output(23, gpio.HIGH)
@@ -22,7 +22,7 @@ def start():
         time.sleep(4)
      
 #turning brakes off
-def stop():
+def break_stop():
         set_break_state(0)
         gpio.output(23, gpio.LOW)
         time.sleep(4)
