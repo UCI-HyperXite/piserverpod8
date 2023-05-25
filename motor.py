@@ -15,12 +15,8 @@ time.sleep(1)
     # Where current is in Amps and is a float above 0.0
     # And frequency is in Hz and is an float above 0.0
 
-motor.engage(30, 30)
-time.sleep(5)
-
-# Similarly, the motor can be stopped via the motor.halt command:
-motor.halt(0)
-time.sleep(1)
+motor.engage(50, 32)
+time.sleep(10)
 
 # You can also poll relevent data from the motor:
 
@@ -28,6 +24,9 @@ print(motor.get_v_in()) # Input voltage to the Flipsky VESC, should match Orion 
 print(motor.get_motor_current()) # Current being drawn by the motor, informs force output
 print(motor.get_incoming_current()) # Current being drawn from the battery, should match Orion BMS 2 Pack Current
 
+# Similarly, the motor can be stopped via the motor.halt command:
+motor.halt()
+time.sleep(1)
 
 # Lastly, remember to stop the heartbeat thread before the object goes out of scope:
     # Failing to do so will mean the thread will continue to run in the background, 
