@@ -2,13 +2,13 @@
 from app import sio
 from utils import get_sid_save, get_break_state, get_current_state, set_current_state
 import asyncio
-from basic_braking_rpi import break_start, break_stop
-from current import vplus, vminus, shunt_current
-from podmotor import motor_start, motor_stop, get_motor_data
-from bms import read_bms
-from wheel_encoder import calc
-from contactor import contactor_start, contactor_stop
-from pneumatics import pressureValue300, pressureMax5000
+#from basic_braking_rpi import #break_start, #break_stop
+#from current import vplus, vminus, shunt_current
+#from podmotor import motor_start, motor_stop, get_motor_data
+#from bms import read_bms
+#from wheel_encoder import calc, distance
+#from contactor import contactor_start, contactor_stop
+#from pneumatics import pressureValue300, pressureMax5000
 BMS_value = 0.0
 PT_5000 = 0.0
 PT_300 = 0.0
@@ -20,32 +20,35 @@ power_check = 0.0
 
 async def send_data():
     sid_save_value  = get_sid_save()
-    bms = read_bms()
-    BMS_value = bms["highest_cell_voltage"]
-    await sio.emit("vplus", round(vplus, 7), to=sid_save_value)
-    await sio.emit("speed", round(calc, 2), to=sid_save_value)
-    await sio.emit("vminus", round(vminus, 7), to=sid_save_value)
-    await sio.emit("shunt", round(shunt_current, 7), to=sid_save_value)
-    await sio.emit("bmsHigh", round(BMS_value, 7), to=sid_save_value)
-    await sio.emit("pressure300", round(pressureValue300, 7)pressureValue300, to=sid_save_value)
-    await sio.emit("pressure5000", round(pressureMax5000, 7), to=sid_save_value)
-    await sio.emit("BMSCells", bms["cells"], to=sid_save_value)
-    await sio.emit("Motor data", get_motor_data(), to=sid_save_value)
+    await sio.emit("pressure300", "Test through send data", to=sid_save_value)
+
+    #bms = read_bms()
+    #BMS_value = bms["highest_cell_voltage"]
+    #await sio.emit("vplus", round(vplus, 7), to=sid_save_value)
+    #await sio.emit("speed", round(calc, 2), to=sid_save_value)
+    #await sio.emit("vminus", round(vminus, 7), to=sid_save_value)
+    #await sio.emit("shunt", round(shunt_current, 7), to=sid_save_value)
+    #await sio.emit("bmsHigh", round(BMS_value, 7), to=sid_save_value)
+    #await sio.emit("pressure300", round(pressureValue300, 7), to=sid_save_value)
+    #await sio.emit("pressure5000", round(pressureMax5000, 7), to=sid_save_value)
+    #await sio.emit("BMSCells", bms["cells"], to=sid_save_value)
+    #await sio.emit("Motor data", get_motor_data(), to=sid_save_value)
+    #await sio.emit("Distance", distance, to=sid_save_value)
 
 async def run_loop() -> None:
     while True:
         try:
             if (get_current_state() == 1):
-                contactor_start()
-                bms = read_bms()
-                BMS_value = bms["highest_cell_voltage"]
+                #contactor_start()
+                #bms = read_bms()
+                #BMS_value = bms["highest_cell_voltage"]
                 print("CURRENT STATE 1", get_current_state())
                 state1_message = "Brakes are not actuated \n Contactor turned off"
                 print("Brakes are not actuated \n Contactor turned off")
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
-                PT_5000 = pressureMax5000
-                PT_300 = pressureValue300
+                #PT_5000 = pressureMax5000
+                #PT_300 = pressureValue300
                 send_data()
                 if(PT_5000 >= 2950 and PT_5000 <= 3500):
                     print("PT 5000 OK!")
@@ -60,9 +63,9 @@ async def run_loop() -> None:
                     #disconnect battery from motors
                 else:
                     print("Log all cell values")
-                if (wheel_encoder < 0.5):
-                    print("Wheel Encoder OK!")
-                break_start()
+                #if (wheel_encoder < 0.5):
+                    #print("Wheel Encoder OK!")
+                #break_start()
         
 
                 #turn on contactor to begin to check high voltage (contactor, two inverters)
@@ -79,8 +82,8 @@ async def run_loop() -> None:
                 print("CURRENT STATE 2", get_current_state())
 
                 #SIGNAL THE BRAKES
-                break_start()
-                motor_start()
+                #break_start()
+                #motor_start()
                 #SEND DATA to GUI 
                 if(PT_5000 >= 2950 and PT_5000 <= 3500):
                     print("PT 5000 OK!")
@@ -122,9 +125,9 @@ async def run_loop() -> None:
             #STOPPING-------------------------------------------------------------------------
             if(get_current_state() == 4):
                 #STOP
-                contactor_stop()
-                motor_stop()
-                break_stop()
+                #contactor_stop()
+                #motor_stop()
+                #break_stop()
                 if(PT_5000 >= 2950 and PT_5000 <= 3500):
                     print("PT 5000 OK!")
                 elif (PT_5000 < 0):
@@ -145,10 +148,10 @@ async def run_loop() -> None:
                     print("PT 300 Checked + in range!")
                 else:
                     print("PT 300  OUT OF RANGE!")
-                if (get_break_state() == 0):
-                    break_start()
-                else:
-                    break_stop()
+                #if (get_break_state() == 0):
+                    #break_start()
+                #else:
+                   # break_stop()
                 send_data()
                 set_current_state(1)
                 print("Brake Switch")

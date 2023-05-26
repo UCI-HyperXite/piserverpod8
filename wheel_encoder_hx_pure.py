@@ -11,6 +11,7 @@ t2 = 0
 deltad = 0.0
 deltat = 0.0
 calc = 0.0
+distance = 0.0
 
 def setup():
     global aLastState, t1
@@ -34,6 +35,7 @@ def loop():
             counter += 1
             deltat = t2 - t1
             calc = 1000 * deltad / deltat
+            distance = t2*calc
             print(t1)
             print(t2)
             print("Instantaneous Speed:", calc)
