@@ -1,6 +1,7 @@
 # run_loop.py
 from app import sio
-from utils import get_sid_save, get_break_state, get_current_state, set_current_state
+from utils import get_sid_save, get_current_state, set_current_state, get_v
+from tester import return_data
 import asyncio
 #from basic_braking_rpi import #break_start, #break_stop
 #from current import vplus, vminus, shunt_current
@@ -20,7 +21,9 @@ power_check = 0.0
 
 async def send_data():
     sid_save_value  = get_sid_save()
-    await sio.emit("pressure300", "Test through send data", to=sid_save_value)
+    data = return_data()
+
+    await sio.emit("pressure300", data, to=sid_save_value)
 
     #bms = read_bms()
     #BMS_value = bms["highest_cell_voltage"]
@@ -45,8 +48,11 @@ async def run_loop() -> None:
                 print("CURRENT STATE 1", get_current_state())
                 state1_message = "Brakes are not actuated \n Contactor turned off"
                 print("Brakes are not actuated \n Contactor turned off")
+                print("vvalue:", get_v())
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
+                await sio.emit("state1", return_data, to=sid_save_value)
+
                 #PT_5000 = pressureMax5000
                 #PT_300 = pressureValue300
                 send_data()
