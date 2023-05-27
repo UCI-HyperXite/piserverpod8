@@ -1,5 +1,5 @@
 from utils import set_v, get_v
-
-def return_data():
+while True:
+    print(get_v())
     set_v(get_v()+1)
-    return get_v()
+

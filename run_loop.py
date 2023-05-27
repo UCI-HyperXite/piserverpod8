@@ -21,9 +21,7 @@ power_check = 0.0
 
 async def send_data():
     sid_save_value  = get_sid_save()
-    data = return_data()
-
-    await sio.emit("pressure300", data, to=sid_save_value)
+    await sio.emit("pressure300", get_v(), to=sid_save_value)
 
     #bms = read_bms()
     #BMS_value = bms["highest_cell_voltage"]
@@ -51,7 +49,7 @@ async def run_loop() -> None:
                 print("vvalue:", get_v())
                 sid_save_value  = get_sid_save()
                 await sio.emit("state1", state1_message, to=sid_save_value)
-                await sio.emit("state1", return_data, to=sid_save_value)
+                await sio.emit("state1", get_v(), to=sid_save_value)
 
                 #PT_5000 = pressureMax5000
                 #PT_300 = pressureValue300
