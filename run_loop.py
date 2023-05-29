@@ -2,7 +2,7 @@
 from app import sio
 from utils import get_sid_save, get_current_state, set_current_state, get_v, get_break_state
 import asyncio
-import RPi.GPIO as GPIO
+#import RPi.GPIO as GPIO
 
 # from pt_test import pt300
 #from basic_braking_rpi import break_start, break_stop
@@ -40,8 +40,8 @@ async def send_data():
     #await sio.emit("Distance", distance, to=sid_save_value)
 
 async def run_loop() -> None:
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setup(26, GPIO.OUT)
+    #GPIO.setmode(GPIO.BCM)
+    #GPIO.setup(26, GPIO.OUT)
     while True:
         try:
             if (get_current_state() == 1):
@@ -74,7 +74,7 @@ async def run_loop() -> None:
                 if (calc < 0.5):
                     print("Wheel Encoder OK!")
                 
-                GPIO.output(26, GPIO.HIGH)
+                #GPIO.output(26, GPIO.HIGH)
                 #turn on contactor to begin to check high voltage (contactor, two inverters)
                 #given code to check inverters
 
@@ -120,7 +120,7 @@ async def run_loop() -> None:
             #STOPPING-------------------------------------------------------------------------
             if(get_current_state() == 4):
                 
-                GPIO.output(26, GPIO.LOW) 
+                #GPIO.output(26, GPIO.LOW) 
                 #STOP
                 #contactor_stop()
                 #motor_stop()
