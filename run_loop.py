@@ -1,7 +1,7 @@
 # run_loop.py
 from app import sio
 from utils import get_sid_save, get_current_state, set_current_state, get_v
-from tester import return_data
+from tester import main as mainTest
 import asyncio
 #from basic_braking_rpi import #break_start, #break_stop
 #from current import vplus, vminus, shunt_current
@@ -21,7 +21,7 @@ power_check = 0.0
 
 async def send_data():
     sid_save_value  = get_sid_save()
-    data = return_data()
+    asyncio.run(mainTest())
 
     await sio.emit("pressure300", data, to=sid_save_value)
 
