@@ -98,7 +98,7 @@ class VESC(object):
         :param current: current to send to the motor
         :param frequency: frequency to send to the motor
         """
-        self.send_terminal_cmd(f'foc_openloop {current} {int(frequency*60*(3/2))}')
+        self.send_terminal_cmd(f'foc_openloop {current} {int(frequency*60)}')
     
     def halt(self):
         """
@@ -170,6 +170,13 @@ class VESC(object):
         :param new_rpm: new rpm value
         """
         self.write(encode(SetRPM(new_rpm)))
+    
+    def set_speed_mph(self, new_speed_mph):
+        """
+        Set the speed in mph
+        :param new_speed_mph: new speed in mph
+        """
+        self.write(encode(SetRPM(new_speed_mph*784)))
 
     def set_current(self, new_current):
         """
