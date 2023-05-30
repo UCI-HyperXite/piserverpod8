@@ -1,32 +1,16 @@
 import RPi.GPIO as GPIO
 import time
-from pneumatics import pressureValue300 as pt
+from asyncgpio import Gpio
 from utils import set_break_state, get_break_state
-GPIO.setmode(GPIO.BCM)
+from asyncgpio import Gpio
 
-GPIO.setup(26, GPIO.OUT)
+brake_pin = 26 
+brake_gpio = Gpio(brake_pin, direction=Gpio.OUTPUT)
 
-#pts
-#turning brakes on 
-def break_start():
-        set_break_state(1)
-        if pt < 25:
-                print("no pressure")
-        elif pt < 105:
-                break_stop()
-        elif pt <= 145:
-    
-                gpio.output(23, gpio.HIGH)
-        else:
-                print("too much pressure")
-        time.sleep(4)
-     
-#turning brakes off
-def break_stop():
-        set_break_state(0)
-        gpio.output(23, gpio.LOW)
-        time.sleep(4)
-        
+def brake_start():
+    brake_gpio.set(1) 
+def brake_stop():
+    brake_gpio.set(0)
 
 
 
