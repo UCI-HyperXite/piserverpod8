@@ -39,7 +39,11 @@ def pt300():
     print("low pressure current", current)
     power = ina219.power  # power in watts
     pressure = (ina219.current/1000-0.005)*(300-14.7)/(0.020-0.005)+14.7
+<<<<<<< HEAD
     print("300 PT CURRENT: ", current)
+=======
+
+>>>>>>> efe2294b35af1f480a0c47e9e47342a058e261ed
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
     '''
     print("Voltage (VIN+) : {:6.3f}   V".format(bus_voltage + shunt_voltage))
