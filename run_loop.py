@@ -43,10 +43,11 @@ async def send_data():
 async def run_loop() -> None:
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(26, GPIO.OUT)
-    serial_port_1 = 'COM15' # Change this to the serial port of your VESC, on Linux (Raspberry Pi) it will be something like '/dev/ttyUSB0'
-    serial_port_2 = 'COM8'
-    motor_1 = limmy.VESC(serial_port=serial_port_1)
-    motor_2 = limmy.VESC(serial_port=serial_port_2)
+    GPIO.setup(20, GPIO.OUT)
+    #serial_port_1 = 'COM15' # Change this to the serial port of your VESC, on Linux (Raspberry Pi) it will be something like '/dev/ttyUSB0'
+    #serial_port_2 = 'COM8'
+    #motor_1 = limmy.VESC(serial_port=serial_port_1)
+    #motor_2 = limmy.VESC(serial_port=serial_port_2)
 
     while True:
         try:
@@ -81,7 +82,8 @@ async def run_loop() -> None:
                     print("Log all cell values")
                 if (calc < 0.5):
                     print("Wheel Encoder OK!")
-                
+                GPIO.output(20, GPIO.HIGH)
+
 
                 #turn on contactor to begin to check high voltage (contactor, two inverters)
                 #given code to check inverters
@@ -95,8 +97,8 @@ async def run_loop() -> None:
                 await sio.emit("pressure5000", pt5000(), to=sid_save_value)
                 #SIGNAL THE BRAKES
                 #motor_start()
-                motor_1.set_speed_mph(2)
-                motor_2.set_speed_mph(2)
+                #motor_1.set_speed_mph(2)
+                #motor_2.set_speed_mph(2)
 
                 
                 #SEND DATA to GUI 
@@ -116,6 +118,7 @@ async def run_loop() -> None:
                 
 
                 GPIO.output(26, GPIO.HIGH)
+
        
                 set_current_state(3)
 
@@ -137,7 +140,10 @@ async def run_loop() -> None:
                     print("PT 300  OUT OF RANGE!")
                 if(power_check == 1):
                     print("Power check ")
+            if (get_current_state() ==4):
                 #break_stop()
+                #motor_1.halt()
+                #motor_2.halt()
                 GPIO.output(26, GPIO.LOW)
 
                 if(PT_5000 >= 2950 and PT_5000 <= 3500):
