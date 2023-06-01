@@ -25,7 +25,7 @@ def readWheel(distanceValue: Value):
     gpioSetup()
     t1 = time.time()
     aLastState = GPIO.input(outputA)
-
+    counter=0
     
     while True:
         aState = GPIO.input(outputA)
@@ -50,12 +50,12 @@ def readWheel(distanceValue: Value):
         distanceValue.value = counter
 
 def main():
-    counter = Value('i', 0.0)
-    p = Process(target=readWheel, args=counter)
+    counter = Value('i', 0)
+    p = Process(target=readWheel, args=(counter,))
     p.start()
     try:
         while True:
-            # time.sleep(0.5)
+            #time.sleep(0.1)
             print(counter.value)
 
     except KeyboardInterrupt:        

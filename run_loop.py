@@ -157,9 +157,26 @@ async def run_loop() -> None:
                 #send_data()
                 print("Braking")
                 set_current_state(1)
+            if (get_current_state() ==5):
+                #break_stop()
+                #motor_1.halt()
+                #motor_2.halt()
+                GPIO.output(26, GPIO.LOW)
+
+                if(PT_5000 >= 2950 and PT_5000 <= 3500):
+                    print("PT 5000 OK!")
+                elif (PT_5000 < 0):
+                    print("PT 5000 OUT OF RANGE")
+                if(PT_300 >= 105 and PT_300 <= 145):
+                    print("PT 300 Checked + in range!")
+                else:
+                    print("PT 300  OUT OF RANGE!")
+                #send_data()
+                print("Braking")
+                set_current_state(1)
                 
             #LOADING--------------switches breaks off/on out of fsm, returns to state 1-----
-            if(get_current_state() == 5):
+            if(get_current_state() == 6):
                 print("enters loading")
                 await sio.emit("pressure300", pt300(), to=sid_save_value)
                 await sio.emit("pressure5000", pt5000(), to=sid_save_value)

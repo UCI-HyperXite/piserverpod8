@@ -1,8 +1,8 @@
 import time
 import RPi.GPIO as GPIO
 
-outputA = 4 #green/black/black
-outputB = 2 #white/red/white,  brown/orange/blue
+outputA = 14 #green/black/black
+outputB = 15 #white/red/white,  brown/orange/blue
 counter = 0
 aState = 0
 aLastState = 0

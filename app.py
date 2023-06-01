@@ -31,10 +31,15 @@ async def stop(sid, data):
         set_current_state(4)
         await sio.emit('stopping pod', "Stage 4: Pod is stoppingu78", to=sid)
 
-@sio.event
-async def load(sid, data):
+async def fstop(sid, data):
     if data == 5:
         set_current_state(5)
+        await sio.emit('force stopping pod', "Stage 5: Pod is FORCE stoppingu78", to=sid)
+
+@sio.event
+async def load(sid, data):
+    if data == 6:
+        set_current_state(6)
         await sio.emit('stopping pod', "Stage 5: Pod is loading", to=sid)
 @sio.event
 async def sum(sid, data):
